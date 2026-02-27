@@ -1,0 +1,125 @@
+Epoch 1/60 | Train: 0.040 | Test: 0.046 | LR: 0.000500
+New Best Model Saved!
+Epoch 2/60 | Train: 0.039 | Test: 0.054 | LR: 0.000500
+New Best Model Saved!
+Epoch 3/60 | Train: 0.064 | Test: 0.031 | LR: 0.000499
+No improvement for 1 epochs
+Epoch 4/60 | Train: 0.070 | Test: 0.069 | LR: 0.000497
+New Best Model Saved!
+Epoch 5/60 | Train: 0.088 | Test: 0.054 | LR: 0.000495
+No improvement for 1 epochs
+Epoch 6/60 | Train: 0.114 | Test: 0.123 | LR: 0.000491
+New Best Model Saved!
+Epoch 7/60 | Train: 0.129 | Test: 0.115 | LR: 0.000488
+No improvement for 1 epochs
+Epoch 8/60 | Train: 0.176 | Test: 0.092 | LR: 0.000483
+No improvement for 2 epochs
+New Best Model Saved!
+Epoch 10/60 | Train: 0.237 | Test: 0.185 | LR: 0.000473
+New Best Model Saved!
+Epoch 11/60 | Train: 0.281 | Test: 0.131 | LR: 0.000467
+No improvement for 1 epochs
+Epoch 12/60 | Train: 0.317 | Test: 0.208 | LR: 0.000460
+New Best Model Saved!
+Epoch 13/60 | Train: 0.367 | Test: 0.238 | LR: 0.000452
+New Best Model Saved!
+Epoch 14/60 | Train: 0.396 | Test: 0.246 | LR: 0.000444
+New Best Model Saved!
+Epoch 15/60 | Train: 0.408 | Test: 0.285 | LR: 0.000436
+New Best Model Saved!
+Epoch 16/60 | Train: 0.448 | Test: 0.285 | LR: 0.000427
+No improvement for 1 epochs
+Epoch 17/60 | Train: 0.482 | Test: 0.292 | LR: 0.000417
+New Best Model Saved!
+Epoch 18/60 | Train: 0.485 | Test: 0.292 | LR: 0.000407
+No improvement for 1 epochs
+Epoch 19/60 | Train: 0.499 | Test: 0.346 | LR: 0.000397
+New Best Model Saved!
+Epoch 20/60 | Train: 0.519 | Test: 0.285 | LR: 0.000386
+No improvement for 1 epochs
+Epoch 21/60 | Train: 0.557 | Test: 0.308 | LR: 0.000375
+No improvement for 2 epochs
+Epoch 22/60 | Train: 0.565 | Test: 0.277 | LR: 0.000363
+No improvement for 3 epochs
+Epoch 23/60 | Train: 0.592 | Test: 0.254 | LR: 0.000352
+No improvement for 4 epochs
+Epoch 24/60 | Train: 0.608 | Test: 0.308 | LR: 0.000340
+No improvement for 5 epochs
+Epoch 25/60 | Train: 0.612 | Test: 0.315 | LR: 0.000327
+No improvement for 6 epochs
+Epoch 26/60 | Train: 0.623 | Test: 0.369 | LR: 0.000315
+New Best Model Saved!
+Epoch 27/60 | Train: 0.641 | Test: 0.323 | LR: 0.000302
+No improvement for 1 epochs
+Epoch 28/60 | Train: 0.650 | Test: 0.308 | LR: 0.000289
+No improvement for 2 epochs
+Epoch 29/60 | Train: 0.645 | Test: 0.323 | LR: 0.000276
+No improvement for 3 epochs
+Epoch 30/60 | Train: 0.666 | Test: 0.331 | LR: 0.000263
+No improvement for 4 epochs
+Epoch 31/60 | Train: 0.700 | Test: 0.377 | LR: 0.000250
+New Best Model Saved!
+Epoch 32/60 | Train: 0.687 | Test: 0.354 | LR: 0.000237
+No improvement for 1 epochs
+Epoch 33/60 | Train: 0.701 | Test: 0.354 | LR: 0.000224
+No improvement for 2 epochs
+Epoch 34/60 | Train: 0.692 | Test: 0.338 | LR: 0.000211
+No improvement for 3 epochs
+Epoch 35/60 | Train: 0.711 | Test: 0.331 | LR: 0.000198
+No improvement for 4 epochs
+Epoch 36/60 | Train: 0.734 | Test: 0.323 | LR: 0.000185
+No improvement for 5 epochs
+Epoch 37/60 | Train: 0.724 | Test: 0.354 | LR: 0.000173
+No improvement for 6 epochs
+Epoch 38/60 | Train: 0.728 | Test: 0.346 | LR: 0.000160
+No improvement for 7 epochs
+Epoch 39/60 | Train: 0.745 | Test: 0.392 | LR: 0.000148
+New Best Model Saved!
+Epoch 40/60 | Train: 0.748 | Test: 0.400 | LR: 0.000137
+New Best Model Saved!
+Epoch 41/60 | Train: 0.751 | Test: 0.362 | LR: 0.000125
+No improvement for 1 epochs
+Epoch 42/60 | Train: 0.755 | Test: 0.362 | LR: 0.000114
+No improvement for 2 epochs
+Epoch 43/60 | Train: 0.766 | Test: 0.369 | LR: 0.000103
+No improvement for 3 epochs
+Epoch 44/60 | Train: 0.779 | Test: 0.354 | LR: 0.000093
+No improvement for 4 epochs
+Epoch 45/60 | Train: 0.781 | Test: 0.392 | LR: 0.000083
+No improvement for 5 epochs
+Epoch 46/60 | Train: 0.779 | Test: 0.377 | LR: 0.000073
+No improvement for 6 epochs
+Epoch 47/60 | Train: 0.791 | Test: 0.400 | LR: 0.000064
+No improvement for 7 epochs
+Epoch 48/60 | Train: 0.780 | Test: 0.377 | LR: 0.000056
+No improvement for 8 epochs
+Early stopping triggered!
+Best Test Accuracy: 0.4
+
+Confusion Matrix:
+ [[4 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [1 0 0 1 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0]
+ [0 0 1 0 0 0 3 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 1 1 1 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [1 0 0 0 2 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0]
+ [0 0 0 0 0 3 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0]
+ [0 0 1 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 2 0]
+ [0 0 0 0 0 0 0 1 0 3 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [3 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 2 0 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 4 0 1 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 0 0 0 0 0 0 0 3 0 0 0 0 1 0 0 0 0 0 0 0]
+ [1 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 1 0 0 1 0]
+ [0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 3 0 0 0 1 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0]
+ [1 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0]
+ [1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 2 0 0 1 0 0 1 0 0 0 0 0 0 0 1 0 0 0]
+ [0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 3 0 0 0 0 0 0 1 0]
+ [0 0 1 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1]]
