@@ -6,29 +6,29 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import confusion_matrix
+from sklearn.utils.class_weight import compute_class_weight
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.utils.class_weight import compute_class_weight
 
 
 SAMPLE_RATE = 16000
 DURATION = 1
 TARGET_LENGTH = SAMPLE_RATE * DURATION
 
-N_MELS = 64
-N_FFT = 512
+N_MELS = 96
+N_FFT = 1024
 HOP_LENGTH = 160
 
 BATCH_SIZE = 32
 EPOCHS = 60
-LR = 0.0005
+LR = 0.0003
 
 TRAIN_PATH = "dataset/train"
 TEST_PATH = "dataset/test"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
+# DATASET
 class SpeechDataset(Dataset):
     def __init__(self, root_path, training=False):
         self.files = []
@@ -55,21 +55,27 @@ class SpeechDataset(Dataset):
 
         audio, _ = librosa.load(file_path, sr=SAMPLE_RATE)
 
-        # Pad / Trim
         if len(audio) < TARGET_LENGTH:
             audio = np.pad(audio, (0, TARGET_LENGTH - len(audio)))
         else:
             audio = audio[:TARGET_LENGTH]
 
-        # Normalize amplitude
         audio = audio / (np.max(np.abs(audio)) + 1e-6)
 
-        #Time Shift Augmentation
+        # Gaussian Noise
+        if self.training and np.random.rand() < 0.5:
+            noise = np.random.normal(0, 0.005, audio.shape)
+            audio = audio + noise
+
+        # Amplitude variation (helps L, W)
+        if self.training and np.random.rand() < 0.3:
+            audio = audio * np.random.uniform(0.8, 1.2)
+
+        # Time Shift
         if self.training:
-            shift = np.random.randint(-1600, 1600)  # ±0.1 sec
+            shift = np.random.randint(-1600, 1600)
             audio = np.roll(audio, shift)
 
-        # Mel Spectrogram
         mel = librosa.feature.melspectrogram(
             y=audio,
             sr=SAMPLE_RATE,
@@ -80,6 +86,10 @@ class SpeechDataset(Dataset):
 
         mel_db = librosa.power_to_db(mel, ref=np.max)
         mel_db = (mel_db - np.mean(mel_db)) / (np.std(mel_db) + 1e-6)
+
+        # High-frequency emphasis (helps S)
+        if self.training and np.random.rand() < 0.3:
+            mel_db[int(N_MELS*0.6):, :] *= 1.1
 
         # SpecAugment
         if self.training:
@@ -97,18 +107,18 @@ class SpeechDataset(Dataset):
         return mel_db, label
 
 
-
-class BalancedCNN_BiLSTM(nn.Module):
+# MODEL WITH ATTENTION
+class AttentionModel(nn.Module):
     def __init__(self, num_classes=26):
-        super(BalancedCNN_BiLSTM, self).__init__()
+        super().__init__()
 
         self.cnn = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.Conv2d(1, 32, 3, padding=1),
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d((2, 2)),
 
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.Conv2d(32, 64, 3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d((2, 2)),
@@ -117,15 +127,17 @@ class BalancedCNN_BiLSTM(nn.Module):
         )
 
         self.lstm = nn.LSTM(
-            input_size=64 * (N_MELS // 8),  # 64 * 8 = 512
-            hidden_size=128,
+            input_size=64 * (N_MELS // 8),
+            hidden_size=96,
             num_layers=1,
             batch_first=True,
             bidirectional=True
         )
 
+        self.attention = nn.Linear(96 * 2, 1)
+
         self.dropout = nn.Dropout(0.5)
-        self.fc = nn.Linear(128 * 2, num_classes)
+        self.fc = nn.Linear(96 * 2, num_classes)
 
     def forward(self, x):
         x = x.unsqueeze(1)
@@ -138,56 +150,59 @@ class BalancedCNN_BiLSTM(nn.Module):
 
         x, _ = self.lstm(x)
 
-        x = x[:, -1, :]
+        attn_weights = torch.softmax(self.attention(x), dim=1)
+        x = torch.sum(attn_weights * x, dim=1)
+
         x = self.dropout(x)
         x = self.fc(x)
 
         return x
 
-#LOAD DATA
+
+
+# LOAD DATA
 train_dataset = SpeechDataset(TRAIN_PATH, training=True)
 test_dataset = SpeechDataset(TEST_PATH, training=False)
-
-print("Label Mapping:", train_dataset.label_map)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
-model = BalancedCNN_BiLSTM(num_classes=len(train_dataset.label_map)).to(DEVICE)
+model = AttentionModel(num_classes=len(train_dataset.label_map)).to(DEVICE)
 
-# Class weights
+
+# CLASS WEIGHTS + BOOSTING
 labels = train_dataset.labels
 class_weights = compute_class_weight(
     class_weight='balanced',
     classes=np.unique(labels),
     y=labels
 )
+
 class_weights = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
 
-#Label Smoothing Added
+#boosting weaker letters 
+for letter in ['b', 'p', 'q', 'z','l', 'w', 's']:
+    idx = train_dataset.label_map[letter]
+    class_weights[idx] *= 1.6
+
+
 criterion = nn.CrossEntropyLoss(
     weight=class_weights,
     label_smoothing=0.1
 )
 
 optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
-
-#Cosine LR Scheduler
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-    optimizer,
-    T_max=EPOCHS
-)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 
 
-#EARLY STOPPING
+# TRAINING LOOP
 best_test_acc = 0
-patience = 8
+patience = 20
 counter = 0
 
 for epoch in range(EPOCHS):
     model.train()
-    correct = 0
-    total = 0
+    correct = total = 0
 
     for inputs, labels in train_loader:
         inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
@@ -205,8 +220,7 @@ for epoch in range(EPOCHS):
     train_acc = correct / total
 
     model.eval()
-    correct = 0
-    total = 0
+    correct = total = 0
 
     with torch.no_grad():
         for inputs, labels in test_loader:
@@ -218,19 +232,17 @@ for epoch in range(EPOCHS):
             correct += (predicted == labels).sum().item()
 
     test_acc = correct / total
-
-    print(f"Epoch {epoch+1}/{EPOCHS} | Train: {train_acc:.3f} | Test: {test_acc:.3f} | LR: {scheduler.get_last_lr()[0]:.6f}")
-
     scheduler.step()
+
+    print(f"Epoch {epoch+1}/{EPOCHS} | Train: {train_acc:.3f} | Test: {test_acc:.3f}")
 
     if test_acc > best_test_acc:
         best_test_acc = test_acc
         counter = 0
-        torch.save(model.state_dict(), "final_best_model.pth")
+        torch.save(model.state_dict(), "attention_best_model_5.pth")
         print("New Best Model Saved!")
     else:
         counter += 1
-        print(f"No improvement for {counter} epochs")
 
     if counter >= patience:
         print("Early stopping triggered!")
@@ -238,10 +250,8 @@ for epoch in range(EPOCHS):
 
 print("Best Test Accuracy:", best_test_acc)
 
-
-#CONFUSION MATRIX
-
-model.load_state_dict(torch.load("final_best_model.pth"))
+# CONFUSION MATRIX
+model.load_state_dict(torch.load("attention_best_model_5.pth"))
 model.eval()
 
 all_preds = []
@@ -259,24 +269,14 @@ with torch.no_grad():
 cm = confusion_matrix(all_labels, all_preds)
 alphabet_labels = [train_dataset.idx_to_label[i] for i in range(len(train_dataset.idx_to_label))]
 
-print("\nConfusion Matrix:\n", cm)
-
 plt.figure(figsize=(14, 12))
 sns.heatmap(
     cm,
     annot=True,
     fmt="d",
-    cmap="Blues",
     xticklabels=alphabet_labels,
-    yticklabels=alphabet_labels
+    yticklabels=alphabet_labels,
+    cmap="Blues"
 )
-
-plt.title("Confusion Matrix")
-plt.xlabel("Predicted Label")
-plt.ylabel("True Label")
-plt.xticks(rotation=45)
-plt.yticks(rotation=0)
-plt.tight_layout()
+plt.title("Confusion Matrix (Focused Model)")
 plt.show()
-
-print("Training complete.")
