@@ -152,6 +152,6 @@ while True:
         confidence, pred = torch.max(probs, 1)
 
     predicted_letter = idx_to_label[pred.item()]
-    conf_percent = confidence.item() * 100
+    # conf_percent = confidence.item() * 100
 
-    print(f"Predicted: {predicted_letter.upper()} | Confidence: {conf_percent:.2f}%\n")
+    print(f"Predicted: {predicted_letter.upper()})
