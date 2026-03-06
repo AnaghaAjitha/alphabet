@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import os
 import numpy as np
 import librosa
@@ -10,7 +16,7 @@ from sklearn.utils.class_weight import compute_class_weight
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
+#parameters
 SAMPLE_RATE = 16000
 DURATION = 1
 TARGET_LENGTH = SAMPLE_RATE * DURATION
@@ -108,7 +114,9 @@ class SpeechDataset(Dataset):
         return mel_db, label
 
 
-#attention model
+# ===============================
+# MODEL WITH ATTENTION
+# ===============================
 class AttentionModel(nn.Module):
     def __init__(self, num_classes=26):
         super().__init__()
@@ -173,7 +181,7 @@ class AttentionModel(nn.Module):
         return x
 
 
-#load data
+#loading data
 train_dataset = SpeechDataset(TRAIN_PATH, training=True)
 test_dataset = SpeechDataset(TEST_PATH, training=False)
 
@@ -182,8 +190,7 @@ test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 model = AttentionModel(num_classes=len(train_dataset.label_map)).to(DEVICE)
 
-
-#adding class weights and boosting
+#adding class weights and boosting weak letters
 labels = train_dataset.labels
 class_weights = compute_class_weight(
     class_weight='balanced',
@@ -207,8 +214,9 @@ criterion = nn.CrossEntropyLoss(
 optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 
-
-# training loop
+# ===============================
+# TRAINING LOOP
+# ===============================
 best_test_acc = 0
 patience = 20
 counter = 0
@@ -262,6 +270,7 @@ for epoch in range(EPOCHS):
         break
 
 print("Best Test Accuracy:", best_test_acc)
+
 
 # CONFUSION MATRIX
 model.load_state_dict(torch.load("attention_best_model_4.pth"))
