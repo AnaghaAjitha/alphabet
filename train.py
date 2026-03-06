@@ -15,8 +15,8 @@ SAMPLE_RATE = 16000
 DURATION = 1
 TARGET_LENGTH = SAMPLE_RATE * DURATION
 
-N_MELS = 96
-N_FFT = 1024
+N_MELS = 64
+N_FFT = 512
 HOP_LENGTH = 160
 
 BATCH_SIZE = 32
@@ -28,10 +28,7 @@ TEST_PATH = "dataset/test"
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-# ===============================
-# DATASET
-# ===============================
+#dataset
 class SpeechDataset(Dataset):
     def __init__(self, root_path, training=False):
         self.files = []
@@ -70,7 +67,7 @@ class SpeechDataset(Dataset):
             noise = np.random.normal(0, 0.005, audio.shape)
             audio = audio + noise
 
-        # Amplitude variation
+        # Amplitude variation (helps L, W)
         if self.training and np.random.rand() < 0.3:
             audio = audio * np.random.uniform(0.8, 1.2)
 
@@ -90,12 +87,13 @@ class SpeechDataset(Dataset):
         mel_db = librosa.power_to_db(mel, ref=np.max)
         mel_db = (mel_db - np.mean(mel_db)) / (np.std(mel_db) + 1e-6)
 
-        # High-frequency emphasis
+        #High-frequency emphasis (helps S)
         if self.training and np.random.rand() < 0.3:
             mel_db[int(N_MELS*0.6):, :] *= 1.1
 
         # SpecAugment
         if self.training:
+            #frequency masking
             if np.random.rand() < 0.5:
                 f = np.random.randint(5, 12)
                 f0 = np.random.randint(0, mel_db.shape[0] - f)
@@ -110,9 +108,7 @@ class SpeechDataset(Dataset):
         return mel_db, label
 
 
-# ===============================
-# MODEL
-# ===============================
+#attention model
 class AttentionModel(nn.Module):
     def __init__(self, num_classes=26):
         super().__init__()
@@ -138,14 +134,27 @@ class AttentionModel(nn.Module):
             batch_first=True,
             bidirectional=True
         )
-
+#linear layer used to compute attention scores
         self.attention = nn.Linear(96 * 2, 1)
 
-        self.dropout = nn.Dropout(0.5)
+#randomly turns off 65% of neurons during training
+        self.dropout = nn.Dropout(0.65)
+
+#This is the final classifier.It converts the attention output vector into alphabet predictions.
         self.fc = nn.Linear(96 * 2, num_classes)
+
+#how input data flows through the model.
+
+# spectrogram initially looks like:
+# (batch, mel, time)
+# CNNs expect:
+# (batch, channels, height, width)
+# So we add a channel dimension:
+# (batch, 1, mel, time)
 
     def forward(self, x):
         x = x.unsqueeze(1)
+#extracts local frequency-time patterns from the spectrogram
         x = self.cnn(x)
 
         batch, channels, mel, time = x.size()
@@ -164,103 +173,96 @@ class AttentionModel(nn.Module):
         return x
 
 
-# ===============================
-# TRAINING RUNS ONLY HERE
-# ===============================
-if __name__ == "__main__":
+#load data
+train_dataset = SpeechDataset(TRAIN_PATH, training=True)
+test_dataset = SpeechDataset(TEST_PATH, training=False)
 
-    train_dataset = SpeechDataset(TRAIN_PATH, training=True)
-    test_dataset = SpeechDataset(TEST_PATH, training=False)
+train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
+model = AttentionModel(num_classes=len(train_dataset.label_map)).to(DEVICE)
 
-    model = AttentionModel(num_classes=len(train_dataset.label_map)).to(DEVICE)
 
-    labels = train_dataset.labels
-    class_weights = compute_class_weight(
-        class_weight='balanced',
-        classes=np.unique(labels),
-        y=labels
-    )
+#adding class weights and boosting
+labels = train_dataset.labels
+class_weights = compute_class_weight(
+    class_weight='balanced',
+    classes=np.unique(labels),
+    y=labels
+)
 
-    class_weights = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
+class_weights = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
 
-    for letter in ['b', 'p', 'q', 'z', 'l', 'w', 's']:
-        idx = train_dataset.label_map[letter]
-        class_weights[idx] *= 1.6
+# Strong boost for plosives/fricatives
+for letter in ['b', 'p', 'q', 'z','l', 'w', 's']:
+    idx = train_dataset.label_map[letter]
+    class_weights[idx] *= 1.6
 
-    criterion = nn.CrossEntropyLoss(
-        weight=class_weights,
-        label_smoothing=0.1
-    )
 
-    optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
+criterion = nn.CrossEntropyLoss(
+    weight=class_weights,
+    label_smoothing=0.1
+)
 
-    best_test_acc = 0
-    patience = 20
-    counter = 0
+optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=1e-4)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=EPOCHS)
 
-    for epoch in range(EPOCHS):
 
-        model.train()
-        correct = total = 0
+# training loop
+best_test_acc = 0
+patience = 20
+counter = 0
 
-        for inputs, labels in train_loader:
+for epoch in range(EPOCHS):
+    model.train()
+    correct = total = 0
 
+    for inputs, labels in train_loader:
+        inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
+
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        _, predicted = torch.max(outputs, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+    train_acc = correct / total
+
+    model.eval()
+    correct = total = 0
+
+    with torch.no_grad():
+        for inputs, labels in test_loader:
             inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
-
-            optimizer.zero_grad()
             outputs = model(inputs)
-
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
-
             _, predicted = torch.max(outputs, 1)
 
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
-        train_acc = correct / total
+    test_acc = correct / total
+    scheduler.step()
 
-        model.eval()
-        correct = total = 0
+    print(f"Epoch {epoch+1}/{EPOCHS} | Train: {train_acc:.3f} | Test: {test_acc:.3f}")
 
-        with torch.no_grad():
+    if test_acc > best_test_acc:
+        best_test_acc = test_acc
+        counter = 0
+        torch.save(model.state_dict(), "attention_best_model_4.pth")
+        print("New Best Model Saved!")
+    else:
+        counter += 1
 
-            for inputs, labels in test_loader:
+    if counter >= patience:
+        print("Early stopping triggered!")
+        break
 
-                inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
+print("Best Test Accuracy:", best_test_acc)
 
-                outputs = model(inputs)
-                _, predicted = torch.max(outputs, 1)
-
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-
-        test_acc = correct / total
-        scheduler.step()
-
-        print(f"Epoch {epoch+1}/{EPOCHS} | Train: {train_acc:.3f} | Test: {test_acc:.3f}")
-
-        if test_acc > best_test_acc:
-
-            best_test_acc = test_acc
-            counter = 0
-
-            torch.save(model.state_dict(), "attention_best_model_4.pth")
-            print("New Best Model Saved!")
-
-        else:
-            counter += 1
-
-        if counter >= patience:
-            print("Early stopping triggered!")
-            break
-
-    print("Best Test Accuracy:", best_test_acc)
 # CONFUSION MATRIX
 model.load_state_dict(torch.load("attention_best_model_4.pth"))
 model.eval()
@@ -291,4 +293,3 @@ sns.heatmap(
 )
 plt.title("Confusion Matrix (Focused Model)")
 plt.show()
-
