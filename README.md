@@ -1,7 +1,7 @@
 # alphabet
 
 dataset
-https://drive.google.com/drive/folders/1IyLXsN025Pn7KEXjSWLdwz5NeDP8AAQg?usp=sharing
+https://drive.google.com/drive/folders/1iOU06_3BEb3g37N8l6-ui-j5aimhC-Vu?usp=sharing
 
 
 
