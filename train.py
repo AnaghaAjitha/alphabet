@@ -250,7 +250,7 @@ if __name__ == "__main__":
             best_test_acc = test_acc
             counter = 0
 
-            torch.save(model.state_dict(), "attention_best_model_5.pth")
+            torch.save(model.state_dict(), "attention_best_model_4.pth")
             print("New Best Model Saved!")
 
         else:
@@ -261,3 +261,34 @@ if __name__ == "__main__":
             break
 
     print("Best Test Accuracy:", best_test_acc)
+# CONFUSION MATRIX
+model.load_state_dict(torch.load("attention_best_model_4.pth"))
+model.eval()
+
+all_preds = []
+all_labels = []
+
+with torch.no_grad():
+    for inputs, labels in test_loader:
+        inputs = inputs.to(DEVICE)
+        outputs = model(inputs)
+        _, predicted = torch.max(outputs, 1)
+
+        all_preds.extend(predicted.cpu().numpy())
+        all_labels.extend(labels.numpy())
+
+cm = confusion_matrix(all_labels, all_preds)
+alphabet_labels = [train_dataset.idx_to_label[i] for i in range(len(train_dataset.idx_to_label))]
+
+plt.figure(figsize=(14, 12))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    xticklabels=alphabet_labels,
+    yticklabels=alphabet_labels,
+    cmap="Blues"
+)
+plt.title("Confusion Matrix (Focused Model)")
+plt.show()
+
