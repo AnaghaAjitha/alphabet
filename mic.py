@@ -1,3 +1,4 @@
+
 import torch
 import torch.nn as nn
 import numpy as np
@@ -12,8 +13,8 @@ SAMPLE_RATE = 16000
 DURATION = 1
 TARGET_LENGTH = SAMPLE_RATE * DURATION
 
-N_MELS = 96
-N_FFT = 1024
+N_MELS = 64
+N_FFT = 512
 HOP_LENGTH = 160
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -82,7 +83,7 @@ class AttentionModel(nn.Module):
 # LOAD MODEL
 # ===============================
 model = AttentionModel(num_classes=26).to(DEVICE)
-model.load_state_dict(torch.load("attention_best_model_5.pth", map_location=DEVICE))
+model.load_state_dict(torch.load("attention_best_model_4.pth", map_location=DEVICE))
 model.eval()
 
 print("Model loaded successfully!")
@@ -130,7 +131,7 @@ while True:
         print("Exiting.")
         break
 
-    print("Recording... Speak now")
+    print("🎙 Recording... Speak now")
 
     audio = sd.rec(
         int(SAMPLE_RATE * DURATION),
@@ -152,6 +153,6 @@ while True:
         confidence, pred = torch.max(probs, 1)
 
     predicted_letter = idx_to_label[pred.item()]
-    # conf_percent = confidence.item() * 100
+    conf_percent = confidence.item() * 100
 
-    print(f"Predicted: {predicted_letter.upper()})
+    print(f"Predicted: {predicted_letter.upper()} | Confidence: {conf_percent:.2f}%\n")
