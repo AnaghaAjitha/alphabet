@@ -229,7 +229,7 @@ class_weights = compute_class_weight(
 
 class_weights = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
 #boosting weaker words
-for letter in ['b','p','q','z','l','w','s']:
+for letter in ['b','d','p','q','z','v','l','w','s']:
     idx = label_map[letter]
     class_weights[idx] *= 1.6
 
@@ -309,7 +309,7 @@ for epoch in range(EPOCHS):
         best_test_acc = test_acc
         counter = 0
 
-        torch.save(model.state_dict(), "attention_best_model_7.pth")
+        torch.save(model.state_dict(), "attention_best_model_8.pth")
 
         print("New Best Model Saved!")
 
@@ -326,7 +326,7 @@ print("Best Test Accuracy:", best_test_acc)
 
 
 #confusion matrix
-model.load_state_dict(torch.load("attention_best_model_7.pth"))
+model.load_state_dict(torch.load("attention_best_model_8.pth"))
 
 model.eval()
 
