@@ -1,143 +1,146 @@
 --- TRAIN SPLIT ---
-a : 153
-b : 125
-c : 141
-d : 135
-e : 119
-f : 96
-g : 98
-h : 98
-i : 114
-j : 92
-k : 93
-l : 116
-m : 115
-n : 117
-o : 78
-p : 112
-q : 71
-r : 70
-s : 93
-t : 94
-u : 114
-v : 115
-w : 114
-x : 115
-y : 115
-z : 109
+a : 172
+b : 145
+c : 161
+d : 154
+e : 139
+f : 116
+g : 118
+h : 118
+i : 134
+j : 112
+k : 113
+l : 136
+m : 135
+n : 138
+o : 98
+p : 132
+q : 91
+r : 90
+s : 113
+t : 114
+u : 134
+v : 134
+w : 134
+x : 135
+y : 135
+z : 128
 
 --- TEST SPLIT ---
-a : 38
-b : 31
-c : 36
-d : 34
-e : 30
-f : 24
-g : 25
-h : 25
-i : 28
-j : 23
-k : 23
-l : 29
-m : 29
-n : 30
-o : 20
-p : 28
-q : 18
-r : 17
-s : 23
-t : 23
-u : 28
-v : 29
-w : 28
-x : 29
-y : 29
-z : 27
-Epoch 1/60 | Train: 0.052 | Test: 0.071
+a : 43
+b : 36
+c : 41
+d : 39
+e : 35
+f : 29
+g : 30
+h : 29
+i : 33
+j : 28
+k : 28
+l : 34
+m : 34
+n : 34
+o : 25
+p : 33
+q : 23
+r : 22
+s : 28
+t : 29
+u : 33
+v : 34
+w : 33
+x : 34
+y : 34
+z : 32
+Epoch 1/60 | Train: 0.048 | Test: 0.089
 New Best Model Saved!
-Epoch 2/60 | Train: 0.070 | Test: 0.125
+Epoch 2/60 | Train: 0.104 | Test: 0.144
 New Best Model Saved!
-Epoch 3/60 | Train: 0.123 | Test: 0.200
+Epoch 3/60 | Train: 0.169 | Test: 0.261
 New Best Model Saved!
-Epoch 4/60 | Train: 0.186 | Test: 0.250
+Epoch 4/60 | Train: 0.235 | Test: 0.323
 New Best Model Saved!
-Epoch 5/60 | Train: 0.244 | Test: 0.354
+Epoch 5/60 | Train: 0.285 | Test: 0.403
 New Best Model Saved!
-Epoch 6/60 | Train: 0.294 | Test: 0.351
-Epoch 7/60 | Train: 0.356 | Test: 0.412
+Epoch 6/60 | Train: 0.332 | Test: 0.435
 New Best Model Saved!
-Epoch 8/60 | Train: 0.358 | Test: 0.457
+Epoch 7/60 | Train: 0.372 | Test: 0.486
 New Best Model Saved!
-Epoch 9/60 | Train: 0.411 | Test: 0.464
+Epoch 8/60 | Train: 0.417 | Test: 0.535
 New Best Model Saved!
-Epoch 10/60 | Train: 0.434 | Test: 0.514
+Epoch 9/60 | Train: 0.448 | Test: 0.577
 New Best Model Saved!
-Epoch 11/60 | Train: 0.463 | Test: 0.547
+Epoch 10/60 | Train: 0.480 | Test: 0.570
+Epoch 11/60 | Train: 0.498 | Test: 0.609
 New Best Model Saved!
-Epoch 12/60 | Train: 0.477 | Test: 0.557
+Epoch 12/60 | Train: 0.537 | Test: 0.636
 New Best Model Saved!
-Epoch 13/60 | Train: 0.519 | Test: 0.567
+Epoch 13/60 | Train: 0.554 | Test: 0.641
 New Best Model Saved!
-Epoch 14/60 | Train: 0.530 | Test: 0.575
+Epoch 14/60 | Train: 0.563 | Test: 0.646
 New Best Model Saved!
-Epoch 15/60 | Train: 0.547 | Test: 0.599
+Epoch 15/60 | Train: 0.571 | Test: 0.651
 New Best Model Saved!
-Epoch 16/60 | Train: 0.556 | Test: 0.608
+Epoch 16/60 | Train: 0.597 | Test: 0.675
 New Best Model Saved!
-Epoch 17/60 | Train: 0.577 | Test: 0.609
+Epoch 17/60 | Train: 0.600 | Test: 0.667
+Epoch 18/60 | Train: 0.611 | Test: 0.707
 New Best Model Saved!
-Epoch 18/60 | Train: 0.584 | Test: 0.641
+Epoch 19/60 | Train: 0.635 | Test: 0.690
+Epoch 20/60 | Train: 0.645 | Test: 0.693
+Epoch 21/60 | Train: 0.643 | Test: 0.708
 New Best Model Saved!
-Epoch 19/60 | Train: 0.593 | Test: 0.663
+Epoch 22/60 | Train: 0.658 | Test: 0.695
+Epoch 23/60 | Train: 0.657 | Test: 0.717
 New Best Model Saved!
-Epoch 20/60 | Train: 0.615 | Test: 0.662
-Epoch 21/60 | Train: 0.629 | Test: 0.658
-Epoch 22/60 | Train: 0.621 | Test: 0.670
+Epoch 24/60 | Train: 0.673 | Test: 0.715
+Epoch 25/60 | Train: 0.676 | Test: 0.711
+Epoch 26/60 | Train: 0.679 | Test: 0.725
 New Best Model Saved!
-Epoch 23/60 | Train: 0.646 | Test: 0.680
+Epoch 27/60 | Train: 0.693 | Test: 0.729
 New Best Model Saved!
-Epoch 24/60 | Train: 0.651 | Test: 0.700
+Epoch 28/60 | Train: 0.682 | Test: 0.727
+Epoch 29/60 | Train: 0.697 | Test: 0.726
+Epoch 30/60 | Train: 0.713 | Test: 0.733
 New Best Model Saved!
-Epoch 25/60 | Train: 0.659 | Test: 0.678
-Epoch 26/60 | Train: 0.664 | Test: 0.696
-Epoch 27/60 | Train: 0.669 | Test: 0.717
+Epoch 31/60 | Train: 0.718 | Test: 0.749
 New Best Model Saved!
-Epoch 28/60 | Train: 0.680 | Test: 0.703
-Epoch 29/60 | Train: 0.677 | Test: 0.724
+Epoch 32/60 | Train: 0.708 | Test: 0.744
+Epoch 33/60 | Train: 0.714 | Test: 0.732
+Epoch 34/60 | Train: 0.718 | Test: 0.743
+Epoch 35/60 | Train: 0.728 | Test: 0.744
+Epoch 36/60 | Train: 0.737 | Test: 0.749
+Epoch 37/60 | Train: 0.727 | Test: 0.753
 New Best Model Saved!
-Epoch 30/60 | Train: 0.675 | Test: 0.724
-Epoch 31/60 | Train: 0.696 | Test: 0.722
-Epoch 32/60 | Train: 0.689 | Test: 0.737
+Epoch 38/60 | Train: 0.720 | Test: 0.758
 New Best Model Saved!
-Epoch 33/60 | Train: 0.701 | Test: 0.716
-Epoch 34/60 | Train: 0.700 | Test: 0.733
-Epoch 35/60 | Train: 0.710 | Test: 0.730
-Epoch 36/60 | Train: 0.704 | Test: 0.743
+Epoch 39/60 | Train: 0.741 | Test: 0.753
+Epoch 40/60 | Train: 0.743 | Test: 0.752
+Epoch 41/60 | Train: 0.751 | Test: 0.753
+Epoch 42/60 | Train: 0.747 | Test: 0.760
 New Best Model Saved!
-Epoch 37/60 | Train: 0.705 | Test: 0.751
+Epoch 43/60 | Train: 0.747 | Test: 0.754
+Epoch 44/60 | Train: 0.752 | Test: 0.768
 New Best Model Saved!
-Epoch 38/60 | Train: 0.718 | Test: 0.741
-Epoch 39/60 | Train: 0.720 | Test: 0.733
-Epoch 40/60 | Train: 0.719 | Test: 0.734
-Epoch 41/60 | Train: 0.730 | Test: 0.749
-Epoch 42/60 | Train: 0.740 | Test: 0.751
-Epoch 43/60 | Train: 0.728 | Test: 0.763
+Epoch 45/60 | Train: 0.751 | Test: 0.765
+Epoch 46/60 | Train: 0.765 | Test: 0.768
+Epoch 47/60 | Train: 0.767 | Test: 0.767
+Epoch 48/60 | Train: 0.766 | Test: 0.771
 New Best Model Saved!
-Epoch 44/60 | Train: 0.746 | Test: 0.754
-Epoch 45/60 | Train: 0.739 | Test: 0.750
-Epoch 46/60 | Train: 0.743 | Test: 0.744
-Epoch 47/60 | Train: 0.743 | Test: 0.751
-Epoch 48/60 | Train: 0.747 | Test: 0.753
-Epoch 49/60 | Train: 0.740 | Test: 0.761
-Epoch 50/60 | Train: 0.745 | Test: 0.756
-Epoch 51/60 | Train: 0.742 | Test: 0.763
-Epoch 52/60 | Train: 0.750 | Test: 0.761
-Epoch 53/60 | Train: 0.743 | Test: 0.760
-Epoch 54/60 | Train: 0.754 | Test: 0.761
-Epoch 55/60 | Train: 0.743 | Test: 0.763
-Epoch 56/60 | Train: 0.749 | Test: 0.761
-Epoch 57/60 | Train: 0.750 | Test: 0.763
-Epoch 58/60 | Train: 0.753 | Test: 0.757
-Epoch 59/60 | Train: 0.743 | Test: 0.760
-Epoch 60/60 | Train: 0.752 | Test: 0.763
-Best Test Accuracy: 0.7627840909090909
+Epoch 49/60 | Train: 0.762 | Test: 0.774
+New Best Model Saved!
+Epoch 50/60 | Train: 0.763 | Test: 0.774
+Epoch 51/60 | Train: 0.760 | Test: 0.774
+Epoch 52/60 | Train: 0.771 | Test: 0.770
+Epoch 53/60 | Train: 0.762 | Test: 0.770
+Epoch 54/60 | Train: 0.762 | Test: 0.776
+New Best Model Saved!
+Epoch 55/60 | Train: 0.768 | Test: 0.779
+New Best Model Saved!
+Epoch 56/60 | Train: 0.766 | Test: 0.774
+Epoch 57/60 | Train: 0.759 | Test: 0.766
+Epoch 58/60 | Train: 0.770 | Test: 0.776
+Epoch 59/60 | Train: 0.760 | Test: 0.777
+Epoch 60/60 | Train: 0.774 | Test: 0.770
+Best Test Accuracy: 0.7791116446578632
