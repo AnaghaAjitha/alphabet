@@ -55,7 +55,7 @@ class AttentionModel(nn.Module):
 
         self.attention = nn.Linear(96 * 2, 1)
 
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.65)
         self.fc = nn.Linear(96 * 2, num_classes)
 
     def forward(self, x):
@@ -96,6 +96,9 @@ print("Type 'q' then ENTER to quit.\n")
 # ===============================
 def preprocess_audio(audio):
 
+    # Remove silence
+    audio, _ = librosa.effects.trim(audio, top_db=20)
+
     if len(audio) < TARGET_LENGTH:
         audio = np.pad(audio, (0, TARGET_LENGTH - len(audio)))
     else:
@@ -131,7 +134,7 @@ while True:
         print("Exiting.")
         break
 
-    print("🎙 Recording... Speak now")
+    print("Recording... Speak now")
 
     audio = sd.rec(
         int(SAMPLE_RATE * DURATION),
